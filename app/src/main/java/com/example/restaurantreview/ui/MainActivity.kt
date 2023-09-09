@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -16,11 +17,16 @@ import com.example.restaurantreview.data.response.Restaurant
 import com.example.restaurantreview.data.response.RestaurantResponse
 import com.example.restaurantreview.data.retrofit.ApiConfig
 import com.example.restaurantreview.databinding.ActivityMainBinding
+<<<<<<< HEAD
+=======
+import com.google.android.material.snackbar.Snackbar
+>>>>>>> 1d91f52 (Initial commit)
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
+<<<<<<< HEAD
     private lateinit var binding: ActivityMainBinding
 
     companion object {
@@ -31,24 +37,65 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+=======
+
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+>>>>>>> 1d91f52 (Initial commit)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.hide()
+<<<<<<< HEAD
+=======
+
+        val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
+        mainViewModel.restaurant.observe(this) { restaurant ->
+            setRestaurantData(restaurant)
+        }
+
+>>>>>>> 1d91f52 (Initial commit)
         val layoutManager = LinearLayoutManager(this)
         binding.rvReview.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         binding.rvReview.addItemDecoration(itemDecoration)
+<<<<<<< HEAD
         findRestaurant()
 
         // menambahkan review
         binding.btnSend.setOnClickListener { view ->
             postReview(binding.edReview.text.toString())
+=======
+
+        mainViewModel.listReview.observe(this) { consumerReviews ->
+            setReviewData(consumerReviews)
+        }
+        mainViewModel.isLoading.observe(this) {
+            showLoading(it)
+        }
+
+//        mainViewModel.snackbarText.observe(this) {
+//            Snackbar.make(window.decorView.rootView, it, Snackbar.LENGTH_SHORT).show()
+//        } // snack stack
+
+        mainViewModel.snackbarText.observe(this) {
+            it.getContentIfNotHandled()?.let { snackBarText ->
+                Snackbar.make(window.decorView.rootView, snackBarText, Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnSend.setOnClickListener { view ->
+            mainViewModel.postReview(binding.edReview.text.toString())
+>>>>>>> 1d91f52 (Initial commit)
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
+<<<<<<< HEAD
     //review
     private fun postReview(review: String) {
         showLoading(true)
@@ -105,12 +152,23 @@ class MainActivity : AppCompatActivity() {
             .load("https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}")
             .into(binding.ivPicture)
     }
+=======
+    private fun setRestaurantData(restaurant: Restaurant) {
+        binding.tvTitle.text = restaurant.name
+        binding.tvDescription.text = restaurant.description
+        Glide.with(this)
+            .load("https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}")
+            .into(binding.ivPicture)
+    }
+
+>>>>>>> 1d91f52 (Initial commit)
     private fun setReviewData(consumerReviews: List<CustomerReviewsItem>) {
         val adapter = ReviewAdapter()
         adapter.submitList(consumerReviews)
         binding.rvReview.adapter = adapter
         binding.edReview.setText("")
     }
+<<<<<<< HEAD
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
             binding.progressBar.visibility = View.VISIBLE
@@ -120,4 +178,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+=======
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+>>>>>>> 1d91f52 (Initial commit)
 }
